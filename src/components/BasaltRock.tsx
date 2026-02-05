@@ -114,34 +114,43 @@ const BasaltRock = ({ handPosition, pulseIntensity }: BasaltRockProps) => {
         }
         
         void main() {
-          // Create vein pattern
-          float veinNoise = snoise(vPosition * 2.0 + time * 0.1);
-          float veinNoise2 = snoise(vPosition * 4.0 - time * 0.15);
-          float veinPattern = smoothstep(0.3, 0.5, abs(veinNoise * veinNoise2));
+          // Create more dynamic vein pattern with faster response
+          float veinNoise = snoise(vPosition * 2.5 + time * 0.3);
+          float veinNoise2 = snoise(vPosition * 5.0 - time * 0.4);
+          float veinNoise3 = snoise(vPosition * 1.5 + time * 0.2);
+          float veinPattern = smoothstep(0.2, 0.45, abs(veinNoise * veinNoise2 * 0.7 + veinNoise3 * 0.3));
           
-          // Pulse effect
-          float pulse = sin(time * 2.0 + vPosition.y * 3.0) * 0.5 + 0.5;
-          pulse = pulse * pulseIntensity * (1.0 + handProximity * 2.0);
+          // Enhanced pulse effect - faster and more reactive
+          float basePulse = sin(time * 4.0 + vPosition.y * 4.0) * 0.5 + 0.5;
+          float handPulse = sin(time * 8.0 + vPosition.x * 3.0) * handProximity;
+          float pulse = (basePulse + handPulse * 0.5) * pulseIntensity * (1.0 + handProximity * 3.0);
           
-          // Calculate vein glow
-          float veinGlow = (1.0 - veinPattern) * (0.6 + pulse * 0.4);
-          veinGlow *= (0.8 + handProximity * 0.5);
+          // More intense vein glow with hand reactivity
+          float veinGlow = (1.0 - veinPattern) * (0.7 + pulse * 0.5);
+          veinGlow *= (0.9 + handProximity * 1.2);
+          veinGlow = pow(veinGlow, 0.8); // Boost glow intensity
           
-          // Mix colors
-          vec3 rockColor = baseColor;
-          vec3 finalVeinColor = mix(veinColor, glowColor, pulse);
+          // Mix colors with more vibrant transitions
+          vec3 rockColor = baseColor * (1.0 + handProximity * 0.1);
+          vec3 hotColor = vec3(1.0, 0.6, 0.1); // Hotter orange-yellow
+          vec3 finalVeinColor = mix(veinColor, hotColor, pulse * handProximity);
+          finalVeinColor = mix(finalVeinColor, glowColor, pulse * 0.5);
           
           vec3 finalColor = mix(rockColor, finalVeinColor, veinGlow);
           
-          // Add rim lighting
+          // Enhanced rim lighting with color shift
           float rim = 1.0 - max(0.0, dot(vNormal, vec3(0.0, 0.0, 1.0)));
-          rim = pow(rim, 3.0);
-          finalColor += glowColor * rim * 0.3 * (1.0 + handProximity);
+          rim = pow(rim, 2.5);
+          vec3 rimColor = mix(glowColor, hotColor, handProximity);
+          finalColor += rimColor * rim * 0.5 * (1.0 + handProximity * 2.0);
           
-          // Add emissive glow based on hand proximity
-          float emissive = veinGlow * (0.5 + handProximity * 1.5);
+          // Stronger emissive glow based on hand proximity
+          float emissive = veinGlow * (0.7 + handProximity * 2.5);
           
-          gl_FragColor = vec4(finalColor + finalVeinColor * emissive * 0.3, 1.0);
+          // Add core glow that intensifies with hand proximity
+          float coreGlow = smoothstep(1.5, 0.0, length(vPosition)) * handProximity * 0.3;
+          
+          gl_FragColor = vec4(finalColor + finalVeinColor * emissive * 0.5 + hotColor * coreGlow, 1.0);
         }
       `,
     });
@@ -167,17 +176,24 @@ const BasaltRock = ({ handPosition, pulseIntensity }: BasaltRockProps) => {
       targetRotation.current.y = time * 0.1;
     }
 
-    // Lerp rotation for smooth movement
-    meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.05;
-    meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.05;
+    // Lerp rotation for smooth movement - faster response
+    meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.08;
+    meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.08;
 
-    // Subtle floating motion
-    meshRef.current.position.y = Math.sin(time * 0.5) * 0.1;
+    // Enhanced floating motion - more dramatic
+    const floatY = Math.sin(time * 0.6) * 0.25 + Math.sin(time * 1.2) * 0.1;
+    const floatX = Math.cos(time * 0.4) * 0.08;
+    const floatZ = Math.sin(time * 0.3) * 0.05;
+    
+    meshRef.current.position.y = floatY;
+    meshRef.current.position.x = floatX;
+    meshRef.current.position.z = floatZ;
 
-    // Update glow mesh
+    // Update glow mesh with slight delay for trailing effect
     if (glowRef.current) {
-      glowRef.current.rotation.copy(meshRef.current.rotation);
-      glowRef.current.position.copy(meshRef.current.position);
+      glowRef.current.rotation.x += (meshRef.current.rotation.x - glowRef.current.rotation.x) * 0.03;
+      glowRef.current.rotation.y += (meshRef.current.rotation.y - glowRef.current.rotation.y) * 0.03;
+      glowRef.current.position.lerp(meshRef.current.position, 0.1);
     }
   });
 
@@ -188,36 +204,27 @@ const BasaltRock = ({ handPosition, pulseIntensity }: BasaltRockProps) => {
         <dodecahedronGeometry args={[2, 2]} />
       </mesh>
       
-      {/* Outer glow */}
-      <mesh ref={glowRef} scale={1.15}>
+      {/* Outer glow - enhanced */}
+      <mesh ref={glowRef} scale={1.2}>
         <dodecahedronGeometry args={[2, 1]} />
         <meshBasicMaterial
-          color="#ff4d00"
+          color="#ff6b00"
           transparent
-          opacity={0.1}
+          opacity={0.15}
           side={THREE.BackSide}
         />
       </mesh>
-
-      {/* Ambient particles */}
-      <points>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={100}
-            array={new Float32Array(
-              Array.from({ length: 300 }, () => (Math.random() - 0.5) * 8)
-            )}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.02}
+      
+      {/* Inner glow layer */}
+      <mesh scale={1.08}>
+        <dodecahedronGeometry args={[2, 2]} />
+        <meshBasicMaterial
           color="#ff4d00"
           transparent
-          opacity={0.6}
+          opacity={0.08}
+          side={THREE.BackSide}
         />
-      </points>
+      </mesh>
     </group>
   );
 };

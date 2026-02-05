@@ -99,33 +99,67 @@ const DataCards = ({ scrollProgress }: DataCardsProps) => {
           <div
             key={point.id}
             ref={(el) => (cardsRef.current[index] = el)}
-            className="glass-card p-8 md:p-10 group hover:border-molten/40 transition-all duration-500"
+            className="relative glass-card p-8 md:p-10 group hover:border-molten/50 transition-all duration-500 float-smooth"
             style={{
-              transform: `translateY(${scrollProgress * (index % 2 === 0 ? -10 : 10)}px)`,
+              transform: `translateY(${scrollProgress * (index % 2 === 0 ? -20 : 20)}px)`,
+              boxShadow: `
+                0 0 30px hsl(18, 100%, 50%, 0.15),
+                0 0 60px hsl(18, 100%, 50%, 0.08),
+                inset 0 0 30px hsl(18, 100%, 50%, 0.03)
+              `,
+              animationDelay: `${index * 0.5}s`,
             }}
           >
+            {/* Glow overlay */}
+            <div 
+              className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              style={{
+                background: 'radial-gradient(ellipse at center, hsl(18, 100%, 50%, 0.1) 0%, transparent 70%)',
+              }}
+            />
+            
+            {/* Corner glow accents */}
+            <div className="absolute -top-px -left-px w-20 h-20 opacity-60 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-molten/80 to-transparent" />
+              <div className="absolute top-0 left-0 h-full w-px bg-gradient-to-b from-molten/80 to-transparent" />
+            </div>
+            <div className="absolute -bottom-px -right-px w-20 h-20 opacity-60 group-hover:opacity-100 transition-opacity">
+              <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-neural/80 to-transparent" />
+              <div className="absolute bottom-0 right-0 h-full w-px bg-gradient-to-t from-neural/80 to-transparent" />
+            </div>
+
             {/* Metric */}
-            <div className="flex items-baseline gap-2 mb-4">
-              <span className="text-5xl md:text-6xl font-bold text-molten group-hover:text-molten-400 transition-colors">
+            <div className="flex items-baseline gap-2 mb-4 relative z-10">
+              <span 
+                className="text-5xl md:text-6xl font-bold text-molten group-hover:text-molten-400 transition-colors"
+                style={{
+                  textShadow: '0 0 30px hsl(18, 100%, 50%, 0.5), 0 0 60px hsl(18, 100%, 50%, 0.3)',
+                }}
+              >
                 {point.metric}
               </span>
-              <span className="text-sm text-neural tracking-wider">
+              <span className="text-sm text-neural tracking-wider drop-shadow-[0_0_10px_hsl(263,70%,50%,0.5)]">
                 {point.unit}
               </span>
             </div>
 
             {/* Label */}
-            <h3 className="text-xl font-semibold text-foreground mb-2">
+            <h3 className="text-xl font-semibold text-foreground mb-2 relative z-10">
               {point.label}
             </h3>
 
             {/* Description */}
-            <p className="text-muted-foreground text-sm leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed relative z-10">
               {point.description}
             </p>
 
-            {/* Decorative line */}
-            <div className="mt-6 h-px bg-gradient-to-r from-molten/50 via-neural/30 to-transparent" />
+            {/* Decorative line with glow */}
+            <div 
+              className="mt-6 h-px bg-gradient-to-r from-molten/60 via-neural/40 to-transparent relative z-10"
+              style={{
+                boxShadow: '0 0 10px hsl(18, 100%, 50%, 0.4)',
+              }}
+            />
           </div>
         ))}
       </div>

@@ -32,7 +32,7 @@ const HandTrackingToggle = ({ isActive, isLoading, error, onToggle }: HandTracki
       
       <span className="text-sm tracking-wide">
         {isLoading 
-          ? 'Initializing...' 
+          ? 'Neural Sync: Standby' 
           : isActive 
             ? 'Neural Input Active' 
             : 'Enable Neural Input'}

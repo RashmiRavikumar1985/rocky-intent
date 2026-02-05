@@ -160,31 +160,32 @@ const BasaltRock = ({ handPosition, pulseIntensity }: BasaltRockProps) => {
     if (!meshRef.current) return;
 
     const time = state.clock.elapsedTime;
-    
+
     // Update shader uniforms
     lavaMaterial.uniforms.time.value = time;
     lavaMaterial.uniforms.pulseIntensity.value = pulseIntensity;
     lavaMaterial.uniforms.handProximity.value = handPosition.isDetected ? 1.0 - Math.abs(handPosition.z) : 0;
 
-    // Smooth rotation based on hand position
+    // Smooth rotation based on hand position - DRAMATIC TILT for 2050 feel
     if (handPosition.isDetected) {
-      targetRotation.current.x = (handPosition.y - 0.5) * 0.5;
-      targetRotation.current.y = (handPosition.x - 0.5) * 0.8;
+      // Strong rotation multipliers - rock follows palm like a magnetic compass
+      targetRotation.current.x = (handPosition.y - 0.5) * 1.5; // 3x stronger Y rotation
+      targetRotation.current.y = (handPosition.x - 0.5) * 2.0; // 2.5x stronger X rotation
     } else {
       // Gentle auto-rotation when no hand detected
-      targetRotation.current.x = Math.sin(time * 0.3) * 0.1;
-      targetRotation.current.y = time * 0.1;
+      targetRotation.current.x = Math.sin(time * 0.3) * 0.15;
+      targetRotation.current.y = time * 0.15;
     }
 
-    // Lerp rotation for smooth movement - faster response
-    meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.08;
-    meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.08;
+    // Enhanced LERP for responsive yet smooth movement (0.12 = faster response)
+    meshRef.current.rotation.x += (targetRotation.current.x - meshRef.current.rotation.x) * 0.12;
+    meshRef.current.rotation.y += (targetRotation.current.y - meshRef.current.rotation.y) * 0.12;
 
     // Enhanced floating motion - more dramatic
     const floatY = Math.sin(time * 0.6) * 0.25 + Math.sin(time * 1.2) * 0.1;
     const floatX = Math.cos(time * 0.4) * 0.08;
     const floatZ = Math.sin(time * 0.3) * 0.05;
-    
+
     meshRef.current.position.y = floatY;
     meshRef.current.position.x = floatX;
     meshRef.current.position.z = floatZ;
@@ -203,7 +204,7 @@ const BasaltRock = ({ handPosition, pulseIntensity }: BasaltRockProps) => {
       <mesh ref={meshRef} material={lavaMaterial}>
         <dodecahedronGeometry args={[2, 2]} />
       </mesh>
-      
+
       {/* Outer glow - enhanced */}
       <mesh ref={glowRef} scale={1.2}>
         <dodecahedronGeometry args={[2, 1]} />
@@ -214,7 +215,7 @@ const BasaltRock = ({ handPosition, pulseIntensity }: BasaltRockProps) => {
           side={THREE.BackSide}
         />
       </mesh>
-      
+
       {/* Inner glow layer */}
       <mesh scale={1.08}>
         <dodecahedronGeometry args={[2, 2]} />

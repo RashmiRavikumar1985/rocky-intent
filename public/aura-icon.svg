@@ -1,0 +1,17 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="12" fill="#0A0A0F"/>
+  <path d="M32 12L52 22V42L32 52L12 42V22L32 12Z" fill="url(#paint0_radial)"/>
+  <path d="M32 16L48 24V40L32 48L16 40V24L32 16Z" fill="#1A1A24"/>
+  <circle cx="32" cy="32" r="8" fill="#FF4D00"/>
+  <circle cx="32" cy="32" r="8" fill="url(#paint1_radial)" fill-opacity="0.8"/>
+  <defs>
+    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(32 32) rotate(90) scale(20)">
+      <stop stop-color="#FF4D00" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#0A0A0F" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="paint1_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(32 32) rotate(90) scale(8)">
+      <stop stop-color="#FF8040"/>
+      <stop offset="1" stop-color="#FF4D00" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

@@ -101,7 +101,6 @@ const DataCards = ({ scrollProgress }: DataCardsProps) => {
             ref={(el) => (cardsRef.current[index] = el)}
             className="relative glass-card p-8 md:p-10 group hover:border-molten/50 transition-all duration-500 float-smooth"
             style={{
-              transform: `translateY(${scrollProgress * (index % 2 === 0 ? -20 : 20)}px)`,
               boxShadow: `
                 0 0 30px hsl(18, 100%, 50%, 0.15),
                 0 0 60px hsl(18, 100%, 50%, 0.08),
@@ -111,13 +110,13 @@ const DataCards = ({ scrollProgress }: DataCardsProps) => {
             }}
           >
             {/* Glow overlay */}
-            <div 
+            <div
               className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
               style={{
                 background: 'radial-gradient(ellipse at center, hsl(18, 100%, 50%, 0.1) 0%, transparent 70%)',
               }}
             />
-            
+
             {/* Corner glow accents */}
             <div className="absolute -top-px -left-px w-20 h-20 opacity-60 group-hover:opacity-100 transition-opacity">
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-molten/80 to-transparent" />
@@ -130,7 +129,7 @@ const DataCards = ({ scrollProgress }: DataCardsProps) => {
 
             {/* Metric */}
             <div className="flex items-baseline gap-2 mb-4 relative z-10">
-              <span 
+              <span
                 className="text-5xl md:text-6xl font-bold text-molten group-hover:text-molten-400 transition-colors"
                 style={{
                   textShadow: '0 0 30px hsl(18, 100%, 50%, 0.5), 0 0 60px hsl(18, 100%, 50%, 0.3)',
@@ -154,7 +153,7 @@ const DataCards = ({ scrollProgress }: DataCardsProps) => {
             </p>
 
             {/* Decorative line with glow */}
-            <div 
+            <div
               className="mt-6 h-px bg-gradient-to-r from-molten/60 via-neural/40 to-transparent relative z-10"
               style={{
                 boxShadow: '0 0 10px hsl(18, 100%, 50%, 0.4)',

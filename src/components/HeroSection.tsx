@@ -92,7 +92,7 @@ const HeroSection = ({ isHandDetected, isTrackingActive, onToggleTracking }: Her
           textShadow: '0 0 30px rgba(255, 77, 0, 0.3), 0 0 60px rgba(255, 77, 0, 0.2)'
         }}
       >
-        Welcome to 2025
+        Welcome to 2050
       </h1>
 
       {/* Subtitle */}
